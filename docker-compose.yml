@@ -1,0 +1,27 @@
+services:
+
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "3006:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  spring-app:
+    image: ghcr.io/mastermind1632/agrifinance-api:latest
+    container_name: spring-app
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/agritech
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+
+volumes:
+  postgres_data:
